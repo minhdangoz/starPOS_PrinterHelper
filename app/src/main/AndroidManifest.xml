@@ -1,0 +1,72 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.starpos.printerhelper">
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+
+    <application
+        android:name="BaseApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activity.FunctionActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.SettingActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity
+            android:name=".activity.PrinterInfoActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.SettingActivity"/>
+        <activity
+            android:name=".activity.QrActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity
+            android:name=".activity.BarCodeActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity
+            android:name=".activity.TextActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize|adjustPan"
+            android:parentActivityName=".activity.FunctionActivity"/>
+
+        <activity android:name=".activity.BitmapActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity android:name=".activity.BitmapBillActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity android:name=".activity.TableActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity android:name=".activity.AllActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity android:name=".activity.BufferActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity android:name=".activity.BlackLabelActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity android:name=".activity.LcdActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+        <activity android:name=".activity.LabelActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.FunctionActivity"/>
+    </application>
+
+</manifest>
