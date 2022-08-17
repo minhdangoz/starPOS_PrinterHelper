@@ -31,7 +31,7 @@ jobs:
         uses: r0adkll/sign-android-release@v1
         id: sign-debug-apk
         with:
-          releaseDirectory: build/outputs/apk/debug
+          releaseDirectory: app/build/outputs/apk/debug
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
