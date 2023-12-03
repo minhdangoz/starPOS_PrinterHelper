@@ -131,7 +131,7 @@ public class HtmlActivity extends BaseActivity {
 
         String replaceAll = "";
 
-        try{
+        try {
             InputStream stream = getAssets().open("base_print_bill.html");
             BufferedReader r = new BufferedReader(new InputStreamReader(stream));
             StringBuilder total = new StringBuilder();
@@ -145,10 +145,9 @@ public class HtmlActivity extends BaseActivity {
             replaceAll = total.toString();
 
             Log.i("HTML", "--> content: " + replaceAll);
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
 
 
         if (dimensionPixelSize < PRINT_WIDTH_65) {
@@ -172,7 +171,6 @@ public class HtmlActivity extends BaseActivity {
 
 //        mWebview.setDrawingCacheEnabled(false);
         mWebview.buildDrawingCache();
-
 
 
         // mWebview.loadUrl("file:///android_asset/base_print_bill.html");
@@ -221,55 +219,39 @@ public class HtmlActivity extends BaseActivity {
         });
 
 
-
     }
 
     public void onClick(View view) {
 
-//        if (this.mBitmapContent == null) {
-        this.mWebview.setScrollbarFadingEnabled(true);
-        int width = this.mWebview.getWidth();
-        int height = this.mWebview.getHeight();
-        this.mWebview.measure(View.MeasureSpec.makeMeasureSpec(0, 0), View.MeasureSpec.makeMeasureSpec(0, 0));
-        WebView webView = this.mWebview;
-        webView.layout(0, 0, webView.getMeasuredWidth(), this.mWebview.getMeasuredHeight());
-        int measuredHeight = this.mWebview.getMeasuredHeight();
-        this.mWebview.setDrawingCacheEnabled(true);
-        this.mWebview.buildDrawingCache();
-
-        Log.e("HTML", "--> measuredHeight = " + measuredHeight);
+        mWebview.setScrollbarFadingEnabled(true);
+        mWebview.measure(View.MeasureSpec.makeMeasureSpec(0, 0), View.MeasureSpec.makeMeasureSpec(0, 0));
+        WebView webView = mWebview;
+        webView.layout(0, 0, webView.getMeasuredWidth(), mWebview.getMeasuredHeight());
+        int measuredHeight = mWebview.getMeasuredHeight();
+        mWebview.setDrawingCacheEnabled(true);
+        mWebview.buildDrawingCache();
 
         if (measuredHeight == 0) {
             return;
         }
-        int height2 = this.mWebview.getMeasuredWidth();
+        int height2 = mWebview.getMeasuredWidth();
 
-        Log.e("HTML", "--> height2 = " + height2);
         if (height2 == 0) {
             return;
         }
-        this.mBitmapContent = Bitmap.createBitmap(this.mWebview.getMeasuredWidth(), measuredHeight, Bitmap.Config.ARGB_8888);
+        mBitmapContent = Bitmap.createBitmap(mWebview.getMeasuredWidth(), measuredHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(this.mBitmapContent);
-        canvas.drawBitmap(this.mBitmapContent, 0.0f, this.mBitmapContent.getHeight(), new Paint());
-        this.mWebview.draw(canvas);
+        canvas.drawBitmap(this.mBitmapContent, 0.0f, mBitmapContent.getHeight(), new Paint());
+        mWebview.draw(canvas);
 
-        Log.e("HTML", "--> bitmap w = " + mBitmapContent.getWidth());
-        Log.e("HTML", "--> bitmap h = " + mBitmapContent.getHeight());
-        this.mBitmapContent = BitmapUtil.resizeImage(mBitmapContent, PRINT_WIDTH_65, false);
-//        this.mWebview.layout(0, 0, width, height);
-
-//        }
+        mBitmapContent = BitmapUtil.resizeImage(mBitmapContent, PRINT_WIDTH_65, false);
 
         if (!BluetoothUtil.isBlueToothPrinter) {
             starPOSPrintHelper.getInstance().printBitmap(mBitmapContent, 0);
             starPOSPrintHelper.getInstance().feedPaper();
         } else {
             BluetoothUtil.sendData(ESCUtil.printRasterBitmap(mBitmapContent, 0));
-
-//            BluetoothUtil.sendData(ESCUtil.printBitmap(mBitmapContent));
-//
             BluetoothUtil.sendData(ESCUtil.nextLine(2));
-
 
         }
     }
