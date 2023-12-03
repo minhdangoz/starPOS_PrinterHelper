@@ -15,5 +15,6 @@
     <color name="gray1">#dedede</color>
     <color name="black">#000000</color>
     <color name="black1">#66000000</color>
+    <color name="textColor">#bdbdbd</color>
 
 </resources>

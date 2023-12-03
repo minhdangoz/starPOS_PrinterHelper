@@ -7,8 +7,10 @@
     <string name="function_barcode">Bar Code</string>
     <string name="function_text">Text</string>
     <string name="function_tab">Form</string>
+    <string name="function_html">HTML</string>
     <string name="function_pic">Picture</string>
     <string name="function_bitmap_bill">Bitmap Bill</string>
+    <string name="function_custom_bill">Custom Bill</string>
     <string name="function_multi">Multi Threading</string>
     <string name="function_threeline">Paper Feed</string>
     <string name="function_buffer">Transaction Print</string>
@@ -156,4 +158,6 @@
         \nVietnamese -  starPOS chuyên cung cấp các thiết bị POS, giải pháp cho FnB</string>
     <!--table explain-->
     <string name="table_instruction">specifications: Bluetooth printing table could only provide examples and printing test. Specific methods could refer to Epson instruction set.  </string>
+
+
 </resources>

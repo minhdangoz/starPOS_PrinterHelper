@@ -9,14 +9,14 @@
         android:id="@+id/worktext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="56px"
-        android:layout_marginTop="56px"
-        android:drawablePadding="12px"
+        android:layout_marginBottom="37dp"
+        android:layout_marginTop="37dp"
+        android:drawablePadding="8dp"
         android:drawableTop="@drawable/function_all"
         android:gravity="center_horizontal"
         android:maxLines="1"
         android:text="@string/function_all"
-        android:textColor="@color/text"
-        android:textSize="24px"/>
+        android:textColor="@color/textColor"
+        android:textSize="16dp"/>
 
 </LinearLayout>

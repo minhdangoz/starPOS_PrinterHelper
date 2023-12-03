@@ -3,6 +3,7 @@ package com.starpos.printerhelper.activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -11,14 +12,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
+import com.google.zxing.BarcodeFormat;
 import com.starpos.printerhelper.R;
+import com.starpos.printerhelper.utils.BitmapUtil;
 import com.starpos.printerhelper.utils.BluetoothUtil;
 import com.starpos.printerhelper.utils.ESCUtil;
 import com.starpos.printerhelper.utils.starPOSPrintHelper;
 
 import java.util.BitSet;
 
-import androidx.annotation.Nullable;
 import sunmi.sunmiui.dialog.DialogCreater;
 import sunmi.sunmiui.dialog.ListDialog;
 
@@ -27,14 +31,14 @@ import sunmi.sunmiui.dialog.ListDialog;
  *
  * @author Jimmy
  */
-public class BitmapBillActivity extends BaseActivity {
+public class CustomBillActivity extends BaseActivity {
     ImageView mImageView;
     TextView mTextView1, mTextView2, mTextView3;
     LinearLayout ll, ll1, ll2;
     Bitmap bitmap, bitmap1;
     CheckBox mCheckBox1, mCheckBox2;
 
-    int mytype;
+    int mytype = 0;
     int myorientation;
 
     @Override
@@ -68,7 +72,7 @@ public class BitmapBillActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 final String[] pos = new String[]{getResources().getString(R.string.align_left), getResources().getString(R.string.align_mid), getResources().getString(R.string.align_right)};
-                final ListDialog listDialog = DialogCreater.createListDialog(BitmapBillActivity.this, getResources().getString(R.string.align_form), getResources().getString(R.string.cancel), pos);
+                final ListDialog listDialog = DialogCreater.createListDialog(CustomBillActivity.this, getResources().getString(R.string.align_form), getResources().getString(R.string.cancel), pos);
                 listDialog.setItemClickListener(new ListDialog.ItemClickListener() {
                     @Override
                     public void OnItemClick(int position) {
@@ -97,7 +101,7 @@ public class BitmapBillActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 final String[] orientation = new String[]{getResources().getString(R.string.pic_hor), getResources().getString(R.string.pic_ver)};
-                final ListDialog listDialog = DialogCreater.createListDialog(BitmapBillActivity.this, getResources().getString(R.string.pic_pos), getResources().getString(R.string.cancel), orientation);
+                final ListDialog listDialog = DialogCreater.createListDialog(CustomBillActivity.this, getResources().getString(R.string.pic_pos), getResources().getString(R.string.cancel), orientation);
                 listDialog.setItemClickListener(new ListDialog.ItemClickListener() {
                     @Override
                     public void OnItemClick(int position) {
@@ -114,7 +118,7 @@ public class BitmapBillActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 final String[] type = new String[]{getResources().getString(R.string.pic_mode1), getResources().getString(R.string.pic_mode2), getResources().getString(R.string.pic_mode3), getResources().getString(R.string.pic_mode4), getResources().getString(R.string.pic_mode5)};
-                final ListDialog listDialog = DialogCreater.createListDialog(BitmapBillActivity.this, getResources().getString(R.string.pic_mode), getResources().getString(R.string.cancel), type);
+                final ListDialog listDialog = DialogCreater.createListDialog(CustomBillActivity.this, getResources().getString(R.string.pic_mode), getResources().getString(R.string.cancel), type);
                 listDialog.setItemClickListener(new ListDialog.ItemClickListener() {
                     @Override
                     public void OnItemClick(int position) {
@@ -136,19 +140,30 @@ public class BitmapBillActivity extends BaseActivity {
         options.inTargetDensity = 100;
         options.inDensity = 100;
         if (bitmap == null) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bill2, options);
+//            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bill2, options);
+            Bitmap qr = BitmapUtil.generateQRBitmap("starposvietnam.vn", 9, 200, 200);
+            Bitmap details = BitmapUtil.textToBitmap("\n- Mã vé: 017124124\n- Ký hiệu: BAOYEN-CPN \n- Tuyến: 01 \n- Giờ in: 15:12 25/06",
+                    384 /2, 20, Typeface.SANS_SERIF, false);
 
+            // qr + text
+            bitmap = BitmapUtil.mergeBitmaps(qr, details);
         }
 
         if (bitmap1 == null) {
-            bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.bill2, options);
-            bitmap1 = scaleImage(bitmap1);
+
+            Bitmap t1 = BitmapUtil.textToBitmap("Số seri bắt đầu:",
+                    384 / 2, 24, Typeface.SANS_SERIF, false);
+
+            Bitmap t2 = BitmapUtil.textToBitmap("012329",
+                    384 / 2, 40, Typeface.SANS_SERIF, true);
+
+            bitmap1 = BitmapUtil.mergeBitmaps(t1, t2);
+
         }
-        if (BluetoothUtil.isBlueToothPrinter) {
-            mImageView.setImageDrawable(new BitmapDrawable(getResources(), bitmap1));
-        } else {
-            mImageView.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
-        }
+
+        bitmap = BitmapUtil.mergeBitmapsVertical(bitmap, bitmap1);
+
+        mImageView.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
 
     }
 
@@ -246,44 +261,32 @@ public class BitmapBillActivity extends BaseActivity {
 
     }
 
-    /**
-     * Scaled image width is an integer multiple of 8 and can be ignored
-     */
-    private Bitmap scaleImage(Bitmap bitmap1) {
-        int width = bitmap1.getWidth();
-        int height = bitmap1.getHeight();
-        int newWidth = (width / 8 + 1) * 8;
-        float scaleWidth = ((float) newWidth) / width;
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, 1);
-        return Bitmap.createBitmap(bitmap1, 0, 0, width, height, matrix, true);
-    }
 
     public void onClick(View view) {
         if (!BluetoothUtil.isBlueToothPrinter) {
             starPOSPrintHelper.getInstance().printBitmap(bitmap, myorientation);
             starPOSPrintHelper.getInstance().feedPaper();
         } else {
-            if(mytype == 0){
-                if(mCheckBox1.isChecked() && mCheckBox2.isChecked()){
-                    BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bitmap1, 3));
-                }else if(mCheckBox1.isChecked()){
-                    BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bitmap1, 1));
-                }else if(mCheckBox2.isChecked()){
-                    BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bitmap1, 2));
-                }else{
-                    BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bitmap1, 0));
+            if (mytype == 0) {
+                if (mCheckBox1.isChecked() && mCheckBox2.isChecked()) {
+                    BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bitmap, 3));
+                } else if (mCheckBox1.isChecked()) {
+                    BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bitmap, 1));
+                } else if (mCheckBox2.isChecked()) {
+                    BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bitmap, 2));
+                } else {
+                    BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bitmap, 0));
                 }
-            }else if(mytype == 1){
-                BluetoothUtil.sendData(ESCUtil.selectBitmap(bitmap1, 0));
-            }else if(mytype == 2){
-                BluetoothUtil.sendData(ESCUtil.selectBitmap(bitmap1, 1));
-            }else if(mytype == 3){
-                BluetoothUtil.sendData(ESCUtil.selectBitmap(bitmap1, 32));
-            }else if(mytype == 4){
-                BluetoothUtil.sendData(ESCUtil.selectBitmap(bitmap1, 33));
+            } else if (mytype == 1) {
+                BluetoothUtil.sendData(ESCUtil.selectBitmap(bitmap, 0));
+            } else if (mytype == 2) {
+                BluetoothUtil.sendData(ESCUtil.selectBitmap(bitmap, 1));
+            } else if (mytype == 3) {
+                BluetoothUtil.sendData(ESCUtil.selectBitmap(bitmap, 32));
+            } else if (mytype == 4) {
+                BluetoothUtil.sendData(ESCUtil.selectBitmap(bitmap, 33));
             }
-//            BluetoothUtil.sendData(ESCUtil.nextLine(3));
+            BluetoothUtil.sendData(ESCUtil.nextLine(3));
 
 //            printImage(bitmap1);
 //            BluetoothUtil.sendData(ESCUtil.nextLine(3));

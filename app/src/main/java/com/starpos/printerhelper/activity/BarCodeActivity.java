@@ -128,7 +128,7 @@ public class BarCodeActivity extends BaseActivity {
         }else{
             symbology = encode;
         }
-        Bitmap bitmap = BitmapUtil.generateBitmap(text, symbology, 700, 400);
+        Bitmap bitmap = BitmapUtil.generateQRBitmap(text, symbology, 700, 400);
         if (bitmap != null) {
             mImageView.setImageDrawable(new BitmapDrawable(bitmap));
         }else{

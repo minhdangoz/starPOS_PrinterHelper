@@ -161,7 +161,7 @@ public class QrActivity extends BaseActivity {
     }
 
     public void onClick(View view) {
-        Bitmap bitmap = BitmapUtil.generateBitmap(mTextView1.getText().toString(), 9, 700, 700);
+        Bitmap bitmap = BitmapUtil.generateQRBitmap(mTextView1.getText().toString(), 9, 700, 700);
         if (bitmap != null) {
             mImageView.setImageDrawable(new BitmapDrawable(bitmap));
         }

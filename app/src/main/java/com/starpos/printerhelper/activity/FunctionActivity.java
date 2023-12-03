@@ -1,7 +1,10 @@
 package com.starpos.printerhelper.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +18,8 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,10 +51,14 @@ public class FunctionActivity extends AppCompatActivity {
                     TextActivity.class),
             new DemoDetails(R.string.function_tab, R.drawable.function_tab,
                     TableActivity.class),
+            new DemoDetails(R.string.function_html, R.drawable.function_tab,
+                    HtmlActivity.class),
             new DemoDetails(R.string.function_pic, R.drawable.function_pic,
                     BitmapActivity.class),
             new DemoDetails(R.string.function_bitmap_bill, R.drawable.function_pic,
                     BitmapBillActivity.class),
+            new DemoDetails(R.string.function_custom_bill, R.drawable.function_pic,
+                    CustomBillActivity.class),
             new DemoDetails(R.string.function_multi, R.drawable.function_multi,
                     null),
             new DemoDetails(R.string.function_threeline, R.drawable.function_threeline,
@@ -73,6 +82,14 @@ public class FunctionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_function);
         setupRecyclerView();
+
+        if (ContextCompat.checkSelfPermission(FunctionActivity.this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            {
+                ActivityCompat.requestPermissions(FunctionActivity.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+            }
+        }
     }
 
     private void setupRecyclerView() {

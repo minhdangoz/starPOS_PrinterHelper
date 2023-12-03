@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.starpos.printerhelper.R;
+import com.starpos.printerhelper.utils.BitmapUtil;
 import com.starpos.printerhelper.utils.BluetoothUtil;
 import com.starpos.printerhelper.utils.ESCUtil;
 import com.starpos.printerhelper.utils.starPOSPrintHelper;
@@ -54,7 +55,7 @@ public class TextActivity extends BaseActivity implements CompoundButton.OnCheck
     private int record;
     private boolean isBold, isUnderLine, isTrueTypeFont;
 
-    private String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "CP928", "Windows-1252", "CP866", "CP852", "CP858", "CP874", "Windows-775", "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "UTF-8"};
+    private String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "CP928", "Windows-1252","Windows-1258", "CP866", "CP852", "CP858", "CP874", "Windows-775", "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "UTF-8"};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -154,7 +155,7 @@ public class TextActivity extends BaseActivity implements CompoundButton.OnCheck
 
         if(isTrueTypeFont){
             // print bitmap
-            Bitmap bmp = textToBitmap(content, 384, 21, Typeface.SANS_SERIF);
+            Bitmap bmp = BitmapUtil.textToBitmap(content, 384, 21, Typeface.SANS_SERIF, false);
             printImage(bmp);
         } else {
             BluetoothUtil.sendData(content.getBytes());
@@ -387,27 +388,5 @@ public class TextActivity extends BaseActivity implements CompoundButton.OnCheck
     }
 
 
-    /**
-     *
-     * Typeface.SANS_SERIF : Typeface.MONOSPACE
-     * */
-    public static Bitmap textToBitmap(String str, int dotPerRow, int textSize, Typeface typeface) {
-        TextPaint textPaint = new TextPaint();
-        textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize((float) textSize);
-        textPaint.setTypeface(Typeface.create(typeface, Typeface.NORMAL));
-        StaticLayout staticLayout = new StaticLayout(str, textPaint, dotPerRow, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-        Bitmap createBitmap = Bitmap.createBitmap(dotPerRow, staticLayout.getHeight(), Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(createBitmap);
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(-1);
-        canvas.drawPaint(paint);
-        canvas.save();
-        canvas.translate(0.0f, 0.0f);
-        staticLayout.draw(canvas);
-        canvas.restore();
-        return createBitmap;
-    }
+
 }

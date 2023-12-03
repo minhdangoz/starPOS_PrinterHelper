@@ -9,10 +9,19 @@ import com.starpos.printerhelper.utils.starPOSPrintHelper;
 
 public class BaseApp extends Application {
 
+    private static BaseApp mInstance;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mInstance = this;
+
         init();
+    }
+
+    public static BaseApp getInstance(){
+        return mInstance;
     }
 
     /**

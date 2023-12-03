@@ -1,6 +1,7 @@
 package com.starpos.printerhelper.utils;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 
@@ -170,6 +171,7 @@ public class ESCUtil {
 		33	24 Dot double density
 	* */
 	public static byte[] printRasterBitmap(Bitmap bitmap, int mode){
+		Log.i("Util", "--> printRasterBitmap mode = " + mode);
 		byte[] bytes1  = new byte[4];
 		bytes1[0] = GS;
 		bytes1[1] = 0x76;
@@ -213,6 +215,7 @@ public class ESCUtil {
 	 * Need to set 1B 33 00 to set the line spacing to 0
 	 */
 	public static byte[] selectBitmap(Bitmap bitmap, int mode){
+		Log.i("ESCUtil", "--> selectBitmap mode = " + mode);
 		return BytesUtil.byteMerger(BytesUtil.byteMerger(new byte[]{ESC, 0x33, 0x00}, BytesUtil.getBytesFromBitMap(bitmap, mode)), new byte[]{0x0A, 0x1B, 0x32});
 	}
 

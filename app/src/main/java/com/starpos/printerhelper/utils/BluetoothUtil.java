@@ -1,12 +1,17 @@
 package com.starpos.printerhelper.utils;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
+import com.starpos.printerhelper.BaseApp;
 import com.starpos.printerhelper.R;
 
 import java.io.IOException;
@@ -26,6 +31,8 @@ public class BluetoothUtil {
     private static final String sunmi_printer = "00:11:22:33:44:55";
     private static final String starPOS_printer = "11:22:33:44:55:66";
 
+    private static final String starPOS_printer_zcs = "66:11:22:33:44:55";
+
     public static boolean isBlueToothPrinter = true;
 
     private static BluetoothSocket bluetoothSocket;
@@ -35,9 +42,12 @@ public class BluetoothUtil {
     }
 
     private static BluetoothDevice getDevice(BluetoothAdapter bluetoothAdapter) {
+        if (ActivityCompat.checkSelfPermission(BaseApp.getInstance(), Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED) {
+            return null;
+        }
         Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
         for (BluetoothDevice device : devices) {
-            if (device.getAddress().equals(sunmi_printer) || device.getAddress().equals(starPOS_printer)) {
+            if (device.getAddress().equals(sunmi_printer) || device.getAddress().equals(starPOS_printer) || device.getAddress().equals(starPOS_printer_zcs)) {
                 return device;
             }
         }
@@ -45,6 +55,10 @@ public class BluetoothUtil {
     }
 
     private static BluetoothSocket getSocket(BluetoothDevice device) throws IOException {
+
+        if (ActivityCompat.checkSelfPermission(BaseApp.getInstance(), Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED) {
+            return null;
+        }
         BluetoothSocket socket;
         socket = device.createRfcommSocketToServiceRecord(PRINTER_UUID);
         socket.connect();
@@ -108,7 +122,7 @@ public class BluetoothUtil {
         // convert byte[] to string
         String s = new String(bytes, StandardCharsets.UTF_8);
 
-//        Log.i(TAG, "==Jimmy== sendData == " + s);
+        Log.i(TAG, "--> sendData s : " + s);
         if (bluetoothSocket != null) {
             try {
                 OutputStream out = bluetoothSocket.getOutputStream();
