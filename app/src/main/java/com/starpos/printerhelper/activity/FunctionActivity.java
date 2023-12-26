@@ -51,6 +51,7 @@ public class FunctionActivity extends AppCompatActivity {
                     TextActivity.class),
             new DemoDetails(R.string.function_tab, R.drawable.function_tab,
                     TableActivity.class),
+
             new DemoDetails(R.string.function_html, R.drawable.function_tab,
                     HtmlActivity.class),
             new DemoDetails(R.string.function_pic, R.drawable.function_pic,
@@ -77,18 +78,26 @@ public class FunctionActivity extends AppCompatActivity {
                     LabelActivity.class)
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_function);
         setupRecyclerView();
 
-        if (ContextCompat.checkSelfPermission(FunctionActivity.this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED)
-        {
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
             {
-                ActivityCompat.requestPermissions(FunctionActivity.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
-            }
+                if(checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
+                        checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(FunctionActivity.this,
+                            new String[]{
+                                    Manifest.permission.BLUETOOTH_CONNECT,
+                                    Manifest.permission.BLUETOOTH_SCAN,
+
+                            }, 2);
+                }
+
         }
     }
 

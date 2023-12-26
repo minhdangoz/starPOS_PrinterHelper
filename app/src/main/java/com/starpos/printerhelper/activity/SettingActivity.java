@@ -14,6 +14,7 @@ import com.starpos.printerhelper.utils.starPOSPrintHelper;
 
 import sunmi.sunmiui.dialog.DialogCreater;
 import sunmi.sunmiui.dialog.ListDialog;
+import timber.log.Timber;
 
 /**
  * Settings
@@ -56,7 +57,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         if (BluetoothUtil.isBlueToothPrinter) {
             ((TextView) findViewById(R.id.setting_textview1)).setText("Bluetooth");
         } else {
-            ((TextView) findViewById(R.id.setting_textview1)).setText("API");
+            ((TextView) findViewById(R.id.setting_textview1)).setText("PrinterService");
         }
         setService();
     }
@@ -65,6 +66,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         final ListDialog listDialog;
         switch (v.getId()) {
+            // Choose connect method
             case R.id.setting_connect:
                 listDialog = DialogCreater.createListDialog(this, getResources().getString(R.string.connect_method), getResources().getString(R.string.cancel), method);
                 listDialog.setItemClickListener(new ListDialog.ItemClickListener() {
@@ -99,6 +101,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             BluetoothUtil.disconnectBlueTooth(SettingActivity.this);
             BluetoothUtil.isBlueToothPrinter = false;
         } else {
+
             if (!BluetoothUtil.connectBlueTooth(SettingActivity.this)) {
                 ((TextView) findViewById(R.id.setting_textview1)).setText(method[0]);
                 BluetoothUtil.isBlueToothPrinter = false;
@@ -112,6 +115,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
      * Set print service connection status
      */
     private void setService() {
+        Timber.i("--> ");
         starPOSPrintHelper.getInstance().showPrinterStatus(this);
 
         if (starPOSPrintHelper.getInstance().starPOSPrinter == starPOSPrintHelper.FoundStarPOSPrinter) {

@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -143,7 +144,7 @@ public class CustomBillActivity extends BaseActivity {
 //            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bill2, options);
             Bitmap qr = BitmapUtil.generateQRBitmap("starposvietnam.vn", 9, 200, 200);
             Bitmap details = BitmapUtil.textToBitmap("\n- Mã vé: 017124124\n- Ký hiệu: BAOYEN-CPN \n- Tuyến: 01 \n- Giờ in: 15:12 25/06",
-                    384 /2, 20, Typeface.SANS_SERIF, false);
+                    384 /2, 20, Typeface.SANS_SERIF, false, Layout.Alignment.ALIGN_NORMAL);
 
             // qr + text
             bitmap = BitmapUtil.mergeBitmaps(qr, details);
@@ -152,10 +153,10 @@ public class CustomBillActivity extends BaseActivity {
         if (bitmap1 == null) {
 
             Bitmap t1 = BitmapUtil.textToBitmap("Số seri bắt đầu:",
-                    384 / 2, 24, Typeface.SANS_SERIF, false);
+                    384 / 2, 24, Typeface.SANS_SERIF, false, Layout.Alignment.ALIGN_NORMAL);
 
             Bitmap t2 = BitmapUtil.textToBitmap("012329",
-                    384 / 2, 40, Typeface.SANS_SERIF, true);
+                    384 / 2, 40, Typeface.SANS_SERIF, true, Layout.Alignment.ALIGN_NORMAL);
 
             bitmap1 = BitmapUtil.mergeBitmaps(t1, t2);
 

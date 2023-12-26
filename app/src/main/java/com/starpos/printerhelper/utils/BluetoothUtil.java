@@ -17,8 +17,11 @@ import com.starpos.printerhelper.R;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
+
+import timber.log.Timber;
 
 /**
  * Simple package for connecting a starPOS printer via Bluetooth
@@ -46,10 +49,11 @@ public class BluetoothUtil {
             return null;
         }
         Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
+
+        Timber.i("--> devices %s", devices.size());
         for (BluetoothDevice device : devices) {
-            if (device.getAddress().equals(sunmi_printer) || device.getAddress().equals(starPOS_printer) || device.getAddress().equals(starPOS_printer_zcs)) {
+            Timber.i("--> found device %s", device.getAddress());
                 return device;
-            }
         }
         return null;
     }
@@ -59,9 +63,22 @@ public class BluetoothUtil {
         if (ActivityCompat.checkSelfPermission(BaseApp.getInstance(), Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED) {
             return null;
         }
+
         BluetoothSocket socket;
-        socket = device.createRfcommSocketToServiceRecord(PRINTER_UUID);
-        socket.connect();
+
+        try{
+            Timber.i("--> createRfcommSocketToServiceRecord");
+            socket = device.createRfcommSocketToServiceRecord(PRINTER_UUID);
+            socket.connect();
+
+
+        } catch (IOException e){
+            Timber.i("--> createInsecureRfcommSocketToServiceRecord");
+            socket = device.createInsecureRfcommSocketToServiceRecord(PRINTER_UUID);
+            socket.connect();
+
+
+        }
         return socket;
     }
 
@@ -69,6 +86,7 @@ public class BluetoothUtil {
      * connect bluetooth
      */
     public static boolean connectBlueTooth(Context context) {
+        Timber.i("--> connectBlueTooth");
         if (bluetoothSocket == null) {
             if (getBTAdapter() == null) {
                 Toast.makeText(context, R.string.toast_3, Toast.LENGTH_SHORT).show();
@@ -87,6 +105,7 @@ public class BluetoothUtil {
             try {
                 bluetoothSocket = getSocket(device);
                 isBlueToothPrinter = true;
+                Toast.makeText(context, R.string.connect_bluetooth_printer_successfully, Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 Toast.makeText(context, R.string.toast_6, Toast.LENGTH_SHORT).show();
                 return false;
@@ -119,10 +138,8 @@ public class BluetoothUtil {
      */
     public static void sendData(byte[] bytes) {
 
-        // convert byte[] to string
-        String s = new String(bytes, StandardCharsets.UTF_8);
+        Log.i("Bluetooth", "--> sendData: " + Arrays.toString(bytes));
 
-        Log.i(TAG, "--> sendData s : " + s);
         if (bluetoothSocket != null) {
             try {
                 OutputStream out = bluetoothSocket.getOutputStream();

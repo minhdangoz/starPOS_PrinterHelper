@@ -153,13 +153,13 @@ public class BitmapUtil {
      *
      * Typeface.SANS_SERIF : Typeface.MONOSPACE
      * */
-    public static Bitmap textToBitmap(String str, int dotPerRow, int textSize, Typeface typeface, boolean bold) {
+    public static Bitmap textToBitmap(String str, int dotPerRow, int textSize, Typeface typeface, boolean bold, Layout.Alignment align) {
         TextPaint textPaint = new TextPaint();
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize((float) textSize);
         textPaint.setTypeface(Typeface.create(typeface, bold ? Typeface.BOLD : Typeface.NORMAL));
-        StaticLayout staticLayout = new StaticLayout(str, textPaint, dotPerRow, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        StaticLayout staticLayout = new StaticLayout(str, textPaint, dotPerRow, align, 1.0f, 0.0f, false);
         Bitmap createBitmap = Bitmap.createBitmap(dotPerRow, staticLayout.getHeight(), Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(createBitmap);
         Paint paint = new Paint();

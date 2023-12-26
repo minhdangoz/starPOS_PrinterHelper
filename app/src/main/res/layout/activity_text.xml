@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/arrow"
                 android:gravity="right|center_vertical"
-                android:text="GB18030"
+                android:text="utf-8"
                 android:textColor="@color/gray"
                 android:textSize="14sp"/>
         </LinearLayout>
@@ -152,7 +152,7 @@
                 android:id="@+id/text_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/text_print"
+                android:text="@string/vietnamese_text_print"
                 android:textColor="@color/text2"/>
         </ScrollView>
 

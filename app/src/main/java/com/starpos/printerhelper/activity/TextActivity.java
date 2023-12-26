@@ -33,9 +33,6 @@ import com.starpos.printerhelper.utils.BluetoothUtil;
 import com.starpos.printerhelper.utils.ESCUtil;
 import com.starpos.printerhelper.utils.starPOSPrintHelper;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 
 import sunmi.sunmiui.dialog.DialogCreater;
@@ -55,7 +52,12 @@ public class TextActivity extends BaseActivity implements CompoundButton.OnCheck
     private int record;
     private boolean isBold, isUnderLine, isTrueTypeFont;
 
-    private String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "CP928", "Windows-1252","Windows-1258", "CP866", "CP852", "CP858", "CP874", "Windows-775", "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "UTF-8"};
+    private String[] mStrings = new String[]{
+            "CP437", "CP850", "CP860", "CP863", "CP865",
+            "CP857", "CP737", "CP928", "Windows-1252","Windows-1258", "CP866",
+            "CP852", "CP858", "CP874", "Windows-775", "CP855",
+            "CP862", "CP864", "GB18030", "BIG5", "KSC5601",
+            "utf-8"};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class TextActivity extends BaseActivity implements CompoundButton.OnCheck
         setMyTitle(R.string.text_title);
         setBack();
 
-        record = 17;
+        record = 20;
         isBold = false;
         isUnderLine = false;
         isTrueTypeFont = true;
@@ -128,40 +130,58 @@ public class TextActivity extends BaseActivity implements CompoundButton.OnCheck
             starPOSPrintHelper.getInstance().printText(content, size, isBold, isUnderLine);
             starPOSPrintHelper.getInstance().feedPaper();
         } else {
-            printByBluTooth(content);
+            // if(starPOSB68)
+            // BluetoothUtil.sendData(ESCUtil.setVietnamCodeSystemSingle());
+
+//            String string1 = "Gia ve: ";
+//            printByBluTooth(string1, 24, false, false);
+//            printByBluTooth("5.000", 28,true, true);
+//            printByBluTooth(" dong / luot\n", 24,false, false);
+//
+//            printByBluTooth("This is normal text - ", 24,false, false);
+//            printByBluTooth("This is bold text - ", 24,true, false);
+//            printByBluTooth("This is bold underline text- ", 24,true, true);
+//            printByBluTooth("This is double width text - ", 28,false, false);
+//            printByBluTooth("This is 2x size text - ", 32,false, false);
+
+            printByBluTooth(content, 24, false, false);
+            BluetoothUtil.sendData(ESCUtil.nextLine(1));
         }
     }
 
-    private void printByBluTooth(String content) {
-        if (isBold) {
-            BluetoothUtil.sendData(ESCUtil.boldOn());
-        } else {
-            BluetoothUtil.sendData(ESCUtil.boldOff());
-        }
+    private void printByBluTooth(String content, float size, boolean bold, boolean underline) {
+        try {
 
-        if (isUnderLine) {
-            BluetoothUtil.sendData(ESCUtil.underlineWithOneDotWidthOn());
-        } else {
-            BluetoothUtil.sendData(ESCUtil.underlineOff());
-        }
+            if (bold) {
+                BluetoothUtil.sendData(ESCUtil.boldOn());
+            } else {
+                BluetoothUtil.sendData(ESCUtil.boldOff());
+            }
 
-        if (record < 17) {
-            BluetoothUtil.sendData(ESCUtil.singleByte());
-            BluetoothUtil.sendData(ESCUtil.setCodeSystemSingle(codeParse(record)));
-        } else {
-            BluetoothUtil.sendData(ESCUtil.singleByteOff());
-            BluetoothUtil.sendData(ESCUtil.setCodeSystem(codeParse(record)));
-        }
+            if (underline) {
+                BluetoothUtil.sendData(ESCUtil.underlineWithOneDotWidthOn());
+            } else {
+                BluetoothUtil.sendData(ESCUtil.underlineOff());
+            }
 
-        if(isTrueTypeFont){
-            // print bitmap
-            Bitmap bmp = BitmapUtil.textToBitmap(content, 384, 21, Typeface.SANS_SERIF, false);
-            printImage(bmp);
-        } else {
-            BluetoothUtil.sendData(content.getBytes());
-        }
+            Log.i("Text", "--> record = " + record);
+            if (record < 17) {
+                BluetoothUtil.sendData(ESCUtil.singleByte());
+                BluetoothUtil.sendData(ESCUtil.setCodeSystemSingle(codeParse(record)));
+            } else {
+                BluetoothUtil.sendData(ESCUtil.singleByteOff());
+                BluetoothUtil.sendData(ESCUtil.setCodeSystem(codeParse(record)));
+            }
 
-        BluetoothUtil.sendData(ESCUtil.nextLine(3));
+            BluetoothUtil.sendData(content.getBytes(mStrings[record]));
+
+//            Bitmap bmp = BitmapUtil.textToBitmap(content, 384 / 3, 26,
+//                    Typeface.SANS_SERIF, bold, Layout.Alignment.ALIGN_NORMAL);
+//            // printImage(bmp);
+//            BluetoothUtil.sendData(ESCUtil.printRasterBitmap(bmp, 0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private BitSet getBitsImageData(Bitmap image) {
@@ -249,12 +269,12 @@ public class TextActivity extends BaseActivity implements CompoundButton.OnCheck
             BluetoothUtil.sendData(imageDataLine);
 
             offset += 24;
-            BluetoothUtil.sendData(ESCUtil.nextLine(1));
+//            BluetoothUtil.sendData(ESCUtil.nextLine(1));
 
         }
 
-        BluetoothUtil.sendData(ESCUtil.setLineSpace(30));
-        BluetoothUtil.sendData(ESCUtil.nextLine(1));
+//        BluetoothUtil.sendData(ESCUtil.setLineSpace(30));
+//        BluetoothUtil.sendData(ESCUtil.nextLine(1));
 
     }
 
@@ -274,7 +294,10 @@ public class TextActivity extends BaseActivity implements CompoundButton.OnCheck
             case 6:
             case 7:
             case 8:
+                // 1258
             case 9:
+                res = 0x06;
+                break;
             case 10:
             case 11:
                 res = (byte) (value + 8);
